@@ -26,7 +26,7 @@ export default {
             </div>
             <div class="arrows">
                 <i @click="backBookCart" class="fa-solid fa-arrow-left"></i>
-                <i @click="nexBookCart" class="fa-solid fa-arrow-right"></i>
+                <i @click="nextBookCart" class="fa-solid fa-arrow-right"></i>
             </div>
         </div>
     `,
@@ -53,11 +53,15 @@ export default {
                 this.index = index;
             });
         },
-        nexBookCart() {
-            this.aloneComponent(this.getElements(), ++this.index);
+        nextBookCart() {
+            setTimeout(() => {
+                this.aloneComponent(this.getElements(), ++this.index);
+            }, 300);
         },
         backBookCart() {
-            this.aloneComponent(this.getElements(), --this.index);
+            setTimeout(() => {
+                this.aloneComponent(this.getElements(), --this.index);
+            }, 300);
         },
         updateBooksList(booksList, mode) {
             switch (mode) {
@@ -80,8 +84,5 @@ export default {
         this.wantToReadList = this.$root.getWantToReadList();
         this.finishReadList = this.$root.getFinishReadList();
         this.aloneComponent(this.getElements(), this.index);
-        // document.addEventListener("keyDown", () => {
-        //     console.log("saas"); // Написать код, чтобы переключать вкладки с книгами с помощью нажатия стрелок на клавиатуре, а не только по клику мышкой на стрелки
-        // });
     }
 }

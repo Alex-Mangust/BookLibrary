@@ -1,6 +1,3 @@
-// import readingblock from "./components/reading/readingBlock.js";
-// import wanttoread from "./components/wantToRead/wantToRead.js";
-// import finishread from "./components/finishRead/finishRead.js";
 import mybooks from "./components/myBooks.js";
 import addbook from "./components/addBook.js";
 new Vue({
@@ -50,13 +47,14 @@ new Vue({
         },
     },
     mounted() {
-        // document.querySelectorAll(".book_cart").forEach(boodCart => {
-        //     boodCart.addEventListener("mouseover", () => {
-        //         boodCart.querySelector(".book_cart_buttons").style.visibility = "visible";
-        //     });
-        //     boodCart.addEventListener("mouseout", () => {
-        //         boodCart.querySelector(".book_cart_buttons").style.visibility = "hidden";
-        //     });
-        // });
+        const app = this;
+        window.addEventListener("keydown", (event) => {
+            if (event.key == "ArrowRight") {
+                app.$refs.myBooks.nextBookCart();
+            }
+            if (event.key == "ArrowLeft") {
+                app.$refs.myBooks.backBookCart();
+            }
+        });
     }
 });
