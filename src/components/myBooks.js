@@ -2,7 +2,6 @@ import readingblock from "./reading/readingBlock.js";
 import wanttoread from "./wantToRead/wantToRead.js";
 import finishread from "./finishRead/finishRead.js";
 
-
 export default {
     name: "mybooks",
     data() {
@@ -81,5 +80,8 @@ export default {
         this.wantToReadList = this.$root.getWantToReadList();
         this.finishReadList = this.$root.getFinishReadList();
         this.aloneComponent(this.getElements(), this.index);
+        // document.addEventListener("keyDown", () => {
+        //     console.log("saas"); // Написать код, чтобы переключать вкладки с книгами с помощью нажатия стрелок на клавиатуре, а не только по клику мышкой на стрелки
+        // });
     }
 }
