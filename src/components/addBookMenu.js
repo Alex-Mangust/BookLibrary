@@ -72,10 +72,8 @@ export default {
             this.bookImages = '';
             this.status = 'none';
         },
-        closeAddBookMenu(event) {
-            // if (event || event.stopPropagation) {
-            //     event.stopPropagation();
-            // }
+        closeAddBookMenu() {
+            this.$parent.$el.classList.add("add_book_active");
             const element = this.$el;
             element.style.display = "none";
             this.clearData();

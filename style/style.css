@@ -111,10 +111,10 @@
     max-height: 150px;
 }
 
-/* .add_book:active {
+.add_book_active:active {
     background-color: red;
     transform: translate(5px, 5px);
-} */
+}
 
 .book_cart_buttons {
     display: flex;
