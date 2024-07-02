@@ -1,7 +1,7 @@
 import datebook from "./dateBook.js";
 export default {
     name: "bookcart",
-    props: ["readbook"],
+    props: ["readbook", "bookstatus"],
     components: {
         datebook
     },
@@ -13,7 +13,7 @@ export default {
                 <button @click="showDateBook">Подробнее</button>
                 <button @click="deleteBook">Удалить</button>
             </div>
-            <datebook :book="readbook"></datebook>
+            <datebook :book="readbook" :status="bookstatus"></datebook>
         </div>
     `,
     methods: {
@@ -29,6 +29,7 @@ export default {
         }
     },
     mounted() {
+        this.readbook;
         document.querySelectorAll(".book_cart").forEach(bookCart => {
             bookCart.addEventListener("mouseover", () => {
                 const bookCartButton = bookCart.querySelectorAll(".book_cart_buttons");

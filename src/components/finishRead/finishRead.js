@@ -7,7 +7,8 @@ export default {
     props: ["booklist"],
     data() {
         return {
-            componentStyle: {}
+            componentStyle: {},
+            bookStatus: "finishread"
         }
     },
     template: `
@@ -17,7 +18,7 @@ export default {
                 <div v-if="booklist.length === 0" class="book_cart">
                     <h3>В данный момент здесь пусто</h3>
                 </div>
-                <bookcart v-for="(book, index) in booklist" :key="index" :readbook="book"></bookcart>
+                <bookcart v-for="(book, index) in booklist" :key="index" :readbook="book" :bookstatus="bookStatus"></bookcart>
             </div>
         </div>
     `,
