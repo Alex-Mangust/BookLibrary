@@ -22,7 +22,10 @@ export default {
                     </div>
                     <div class="form-group">
                         <label>Вставьте ссылку на обложку книги:</label>
-                        <input v-model="bookImages" type="text">
+                        <div>
+                            <input v-model="bookImages" type="text">
+                            <button @click="downoloadImage">Или загрузите изображение</button>
+                        </div>
                     </div>
                 </div>
                 <select class="select_status_book" v-model="status">
@@ -77,6 +80,10 @@ export default {
             const element = this.$el;
             element.style.display = "none";
             this.clearData();
+        }, 
+        async downoloadImage() {
+            const filePaths = await window.api.openFileDialog();
+            this.bookImages = filePaths[0];
         }
     }
 }

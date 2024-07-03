@@ -1,7 +1,7 @@
 import mybooks from "./components/myBooks.js";
 import addbook from "./components/addBook.js";
 import wantToRead from "./components/wantToRead/wantToRead.js";
-const API_URL = 'http://localhost:5000';
+// const API_URL = 'http://localhost:5000';
 new Vue({
     el: "#app",
     components: {
@@ -50,24 +50,33 @@ new Vue({
             return this.finishReadList;
         },
         async getDataServer(path) {
-            const response = await fetch(`${API_URL}/${path}`);
-            if (response.ok) {
-                const data = await response.json();
+            try {
+                const fileName = `${path}.json`; // Имя файла
+                const data = await window.get.getDataServer(fileName);
+                // console.log('Data received:', data);
                 return data;
-            } else {
-                console.log("Error connect");
-                return []
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return [];
             }
         },
-        async sentDataServer(path, newBookList) {
-            await fetch(`${API_URL}/${path}`, { // post - отправлять
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8"
-                },
-                body: JSON.stringify(newBookList)
-            });
+        async sentDataServer(mode, newBookList) {
+            // await fetch(`${API_URL}/${path}`, { // post - отправлять
+            //     method: "POST",
+            //     mode: "cors",
+            //     headers: {
+            //         "Content-Type": "application/json; charset=utf-8"
+            //     },
+            //     body: JSON.stringify(newBookList)
+            // });
+            // console.error(newBookList);
+            if (mode === "reading") {
+                window.send.reading(newBookList);
+            } else if (mode === "wanttoread") {
+                window.send.wantToRead(newBookList);
+            } else if (mode === "finishread") {
+                window.send.finishRead(newBookList);
+            }
         }
     },
     async mounted() {
@@ -82,9 +91,9 @@ new Vue({
         });
         this.readingList = await this.getDataServer("reading");
         this.$refs.myBooks.updateBooksList(this.readingList, 1);
-        this.wantToReadList = await this.getDataServer("wanttoread");
+        this.wantToReadList = await this.getDataServer("want_to_read");
         this.$refs.myBooks.updateBooksList(this.wantToReadList, 2);
-        this.finishReadList = await this.getDataServer("finishread");
+        this.finishReadList = await this.getDataServer("finish_read");
         this.$refs.myBooks.updateBooksList(this.finishReadList, 3);
     }
 });
