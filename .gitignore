@@ -1,0 +1,37 @@
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Logs
+*.log
+*.tmp
+
+# OS-specific
+.DS_Store
+
+# IDE/editor-specific
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Environment files
+.env
+
+# Cache
+.cache/
+.npm/
+.yarn/
+
+# Misc
+*.tgz
+*.tar.gz
+
+# Script
+Electron.js

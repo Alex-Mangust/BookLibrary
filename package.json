@@ -1,17 +1,24 @@
 {
   "name": "booklibrary",
   "version": "1.0.0",
-  "description": "",
-  "main": "./src/script.js",
+  "main": "server.js",
+  "bin": {
+    "booklibrary": "server.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "watch": "webpack --watch"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "webpack": "^5.92.1",
-    "webpack-cli": "^5.1.4"
-  }
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.3",
+    "electron": "^31.1.0"
+  },
+  "description": ""
 }
