@@ -15,7 +15,7 @@ const createWindow = () => {
             nodeIntegration: false
         }
     });
-    const indexPath = path.join(__dirname, 'index.html');
+    const indexPath = path.join(__dirname, "build/src", 'index.html');
     console.log("Loading file from:", indexPath);
 
     win.loadFile(indexPath).catch(err => {

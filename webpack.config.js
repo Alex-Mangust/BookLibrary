@@ -1,12 +1,14 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/main.js',
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/', // Убедитесь, что путь корректный
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'build/src'),
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -21,25 +23,38 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        type: 'asset/resource', // Для Webpack 5
+        type: 'asset/resource',
         generator: {
-          filename: 'assets/images/[name][ext][query]', // Куда поместить файлы
+          filename: 'assets/images/[name][ext][query]',
         },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        type: 'asset/resource', // Для Webpack 5
+        type: 'asset/resource',
         generator: {
-          filename: 'assets/fonts/[name][ext][query]', // Куда поместить шрифты
+          filename: 'assets/fonts/[name][ext][query]',
         },
       },
     ],
   },
-  plugins: [new VueLoaderPlugin()],
+  plugins: [
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'styles/[name].css',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/index.html', to: '' },
+      ],
+    }),
+  ],
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.esm-bundler.js',
