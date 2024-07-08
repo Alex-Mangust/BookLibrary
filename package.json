@@ -18,10 +18,13 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "crypto-browserify": "^3.12.0",
     "css-loader": "^6.7.3",
     "express": "^4.19.2",
     "mini-css-extract-plugin": "^2.9.0",
     "open": "^10.1.0",
+    "stream-browserify": "^3.0.0",
+    "vm-browserify": "^1.1.2",
     "vue": "^3.4.31",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4"
@@ -45,8 +48,22 @@
     "productName": "BookLibrary",
     "files": [
       "build/**/*",
-      "books/**/*",
+      {
+        "from": "books",
+        "to": "books",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "img",
+        "to": "img",
+        "filter": [
+          "**/*"
+        ]
+      },
       "server.js",
+      "preload.js",
       "node_modules/**/*",
       "package.json"
     ],
@@ -54,6 +71,10 @@
       "buildResources": "assets",
       "output": "./dist/BookLibrary"
     },
+    "asarUnpack": [
+      "books/**/*",
+      "img/**/*"
+    ],
     "win": {
       "target": "nsis"
     }

@@ -1,8 +1,39 @@
 const {app, BrowserWindow, ipcMain, dialog} = require("electron");
 const path = require("path");
+const { title } = require("process");
 const fs = require("fs").promises;
 
-const BASE_DIR_BOOKS = path.join(__dirname, 'books');
+let BASE_DIR_BOOKS;
+
+const getBaseDirBooks = () => {
+    const appExePath = app.getPath('exe');
+    const appDir = path.dirname(appExePath);
+    const unpackedPath = path.join(appDir, 'resources', 'app.asar.unpacked', 'books');
+    return unpackedPath;
+};
+
+async function checkFileExists(filePath) {
+    try {
+        await fs.access(filePath, fs.constants.F_OK);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+async function initializeApp() {
+    BASE_DIR_BOOKS = getBaseDirBooks();
+    let fileExists = await checkFileExists(path.join(BASE_DIR_BOOKS, 'reading.json'));
+    fileExists = fileExists || await checkFileExists(path.join(BASE_DIR_BOOKS, 'want_to_read.json'));
+    fileExists = fileExists || await checkFileExists(path.join(BASE_DIR_BOOKS, 'finish_read.json'));
+    if (!fileExists) {
+        BASE_DIR_BOOKS = path.join(__dirname, 'books');
+        console.log('Files not found. Using fallback directory:', BASE_DIR_BOOKS);
+    } else {
+        console.log('Files found in:', BASE_DIR_BOOKS);
+    }
+}
+
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
@@ -16,7 +47,7 @@ const createWindow = () => {
         }
     });
     const indexPath = path.join(__dirname, "build/src", 'index.html');
-    console.log("Loading file from:", indexPath);
+    // console.log("Loading file from:", indexPath);
 
     win.loadFile(indexPath).catch(err => {
         console.error("Error loading file:", err);
@@ -27,7 +58,8 @@ const createWindow = () => {
     });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+    await initializeApp();
     createWindow();
 
     app.on("activate", () => {
@@ -42,7 +74,6 @@ app.on("window-all-closed", () => {
         app.quit();
     }
 });
-
 
 ipcMain.on("reading", (event, arg) => {
     fs.writeFile(path.join(BASE_DIR_BOOKS, 'reading.json'), JSON.stringify(arg), { encoding: 'utf8' }, (err) => {

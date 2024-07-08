@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/main.js',
+  mode: "development",
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'build/src'),
@@ -60,7 +61,10 @@ module.exports = {
       vue$: 'vue/dist/vue.esm-bundler.js',
     },
     fallback: {
-      "path": require.resolve("path-browserify")
+      "crypto": require.resolve("crypto-browserify"),
+      "path": require.resolve("path-browserify"),
+      "stream": require.resolve("stream-browserify"),
+      "vm": require.resolve("vm-browserify"),
     },
     extensions: ['.js', '.vue', '.json'],
   },
