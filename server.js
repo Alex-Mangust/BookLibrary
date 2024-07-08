@@ -17,11 +17,15 @@ const createWindow = () => {
     });
     // win.loadFile("./Frontend/index.html");
     // win.loadFile(path.join(__dirname, 'Frontend', 'index.html'));
-    const indexPath = path.join(__dirname, 'Frontend', 'index.html');
+    const indexPath = path.join(__dirname, 'index.html');
     console.log("Loading file from:", indexPath); // Логирование пути для отладки
 
     win.loadFile(indexPath).catch(err => {
         console.error("Error loading file:", err); // Обработка ошибки загрузки
+    });
+
+    win.once('ready-to-show', () => {
+        win.maximize(); // Увеличивает окно до размеров экрана, оставляя панель заголовка
     });
 }
 
@@ -82,6 +86,10 @@ ipcMain.handle('get', async (event, fileName) => {
         console.error('Error reading file:', error);
         throw error; 
     }
+});
+
+ipcMain.handle("getIcon", async () => {
+    return path.join(__dirname, "img", "addBookImage.png");
 });
 
 ipcMain.handle('filedialog', async () => {

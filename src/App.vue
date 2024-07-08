@@ -1,18 +1,19 @@
-import mybooks from "./components/myBooks.js";
-import addbook from "./components/addBook.js";
-import wantToRead from "./components/wantToRead/wantToRead.js";
-// const API_URL = 'http://localhost:5000';
-new Vue({
-    el: "#app",
+<script>
+import MyBooks from "./components/MyBooks.vue";
+import BookAdd from "./components/BookAdd.vue";
+
+export default {
     components: {
-        mybooks,
-        addbook,
+        MyBooks,
+        BookAdd,
     },
-    data: {
-        title: "Личная библиотека",
-        readingList: [],
-        wantToReadList: [],
-        finishReadList: []
+    data() {
+        return {
+            title: "Личная библиотека",
+            readingList: [],
+            wantToReadList: [],
+            finishReadList: []
+        }
     },
     watch: {
         readingList(newData) {
@@ -39,21 +40,24 @@ new Vue({
                     break;
                 }
             }
+            this.$refs.myBooks.setList(booksList, mode);
         },
-        getReadingList() {
-            return this.readingList;
+        setReadingList(book) {
+            this.readingList.push(book);
+            this.updateBooksList(this.readingList, 1);
         },
-        getWantToReadList() {
-            return this.wantToReadList;
+        setWantToReadList(book) {
+            this.wantToReadList.push(book);
+            this.updateBooksList(this.readingList, 2);
         },
-        getFinishReadList() {
-            return this.finishReadList;
+        setFinishReadList(book) {
+            this.finishReadList.push(book);
+            this.updateBooksList(this.readingList, 3);
         },
         async getDataServer(path) {
             try {
-                const fileName = `${path}.json`; // Имя файла
+                const fileName = `${path}.json`;
                 const data = await window.get.getDataServer(fileName);
-                // console.log('Data received:', data);
                 return data;
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -61,15 +65,6 @@ new Vue({
             }
         },
         async sentDataServer(mode, newBookList) {
-            // await fetch(`${API_URL}/${path}`, { // post - отправлять
-            //     method: "POST",
-            //     mode: "cors",
-            //     headers: {
-            //         "Content-Type": "application/json; charset=utf-8"
-            //     },
-            //     body: JSON.stringify(newBookList)
-            // });
-            // console.error(newBookList);
             if (mode === "reading") {
                 window.send.reading(newBookList);
             } else if (mode === "wanttoread") {
@@ -90,10 +85,17 @@ new Vue({
             }
         });
         this.readingList = await this.getDataServer("reading");
-        this.$refs.myBooks.updateBooksList(this.readingList, 1);
+        this.updateBooksList(this.readingList, 1);
         this.wantToReadList = await this.getDataServer("want_to_read");
-        this.$refs.myBooks.updateBooksList(this.wantToReadList, 2);
+        this.updateBooksList(this.wantToReadList, 2);
         this.finishReadList = await this.getDataServer("finish_read");
-        this.$refs.myBooks.updateBooksList(this.finishReadList, 3);
+        this.updateBooksList(this.finishReadList, 3);
     }
-});
+}
+</script>
+
+<template>
+    <h1>{{ title }}</h1>
+    <MyBooks @update="updateBooksList" ref="myBooks"></MyBooks>
+    <!-- <BookAdd @update="updateBooksList"></BookAdd> -->
+</template>

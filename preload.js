@@ -7,7 +7,8 @@ contextBridge.exposeInMainWorld("send", {
 });
 
 contextBridge.exposeInMainWorld("get", {
-    getDataServer: (filePath) => ipcRenderer.invoke('get', filePath)
+    getDataServer: (filePath) => ipcRenderer.invoke('get', filePath),
+    getIcon: () => ipcRenderer.invoke("getIcon")
 });
 
 contextBridge.exposeInMainWorld('api', {
