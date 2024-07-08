@@ -15,44 +15,41 @@ export default {
             finishReadList: []
         }
     },
-    watch: {
-        readingList(newData) {
-            this.sentDataServer("reading", newData);
-        },
-        wantToReadList(newData) {
-            this.sentDataServer("wanttoread", newData);
-        },
-        finishReadList(newData) {
-            this.sentDataServer("finishread", newData);
-        }
-    },
     methods: {
         updateBooksList(booksList, mode) {
             switch (mode) {
                 case 1:
                     this.readingList = booksList;
+                    this.sentDataServer("reading", booksList);
                     break;
                 case 2:
                     this.wantToReadList = booksList;
+                    this.sentDataServer("wanttoread", booksList);
                     break;
                 case 3: {
                     this.finishReadList = booksList;
+                    this.sentDataServer("finishread", booksList);
                     break;
                 }
             }
             this.$refs.myBooks.setList(booksList, mode);
         },
-        setReadingList(book) {
-            this.readingList.push(book);
-            this.updateBooksList(this.readingList, 1);
-        },
-        setWantToReadList(book) {
-            this.wantToReadList.push(book);
-            this.updateBooksList(this.readingList, 2);
-        },
-        setFinishReadList(book) {
-            this.finishReadList.push(book);
-            this.updateBooksList(this.readingList, 3);
+        addBook(book, mode) {
+            switch (mode) {
+                case 1:
+                    this.readingList.push(book);
+                    this.updateBooksList(this.readingList, 1);
+                    break;
+                case 2:
+                    this.wantToReadList.push(book);
+                    this.updateBooksList(this.wantToReadList, 2);
+                    break;
+                case 3: {
+                    this.finishReadList.push(book);
+                    this.updateBooksList(this.finishReadList, 3);
+                    break;
+                }
+            }
         },
         async getDataServer(path) {
             try {
@@ -65,12 +62,13 @@ export default {
             }
         },
         async sentDataServer(mode, newBookList) {
+            const dataBookList = JSON.parse(JSON.stringify(newBookList));
             if (mode === "reading") {
-                window.send.reading(newBookList);
+                window.send.reading(dataBookList);
             } else if (mode === "wanttoread") {
-                window.send.wantToRead(newBookList);
+                window.send.wantToRead(dataBookList);
             } else if (mode === "finishread") {
-                window.send.finishRead(newBookList);
+                window.send.finishRead(dataBookList);
             }
         }
     },
@@ -97,5 +95,5 @@ export default {
 <template>
     <h1>{{ title }}</h1>
     <MyBooks @update="updateBooksList" ref="myBooks"></MyBooks>
-    <!-- <BookAdd @update="updateBooksList"></BookAdd> -->
+    <BookAdd @add="addBook"></BookAdd>
 </template>

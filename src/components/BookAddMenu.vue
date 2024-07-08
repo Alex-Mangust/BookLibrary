@@ -26,13 +26,13 @@ export default {
             }
             switch (this.status) {
                 case "reading":
-                    this.$emit('reading', newBook);
+                    this.$emit('add', newBook, 1);
                     break;
                 case "wanttoread":
-                    this.$emit('wanttoread', newBook);
+                    this.$emit('add', newBook, 2);
                     break;
                 case "finishread":
-                    this.$emit('finishread', newBook);
+                    this.$emit('add', newBook, 3);
                     break;
             }
             this.$refs.closeButton.click();

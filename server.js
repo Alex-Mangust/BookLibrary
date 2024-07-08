@@ -15,13 +15,11 @@ const createWindow = () => {
             nodeIntegration: false
         }
     });
-    // win.loadFile("./Frontend/index.html");
-    // win.loadFile(path.join(__dirname, 'Frontend', 'index.html'));
     const indexPath = path.join(__dirname, 'index.html');
-    console.log("Loading file from:", indexPath); // Логирование пути для отладки
+    console.log("Loading file from:", indexPath);
 
     win.loadFile(indexPath).catch(err => {
-        console.error("Error loading file:", err); // Обработка ошибки загрузки
+        console.error("Error loading file:", err);
     });
 
     win.once('ready-to-show', () => {

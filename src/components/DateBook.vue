@@ -1,5 +1,4 @@
 <script>
-// import { app, vm } from "../main.js"
 export default {
     name: "DateBook",
     props: ["book", "status"],
