@@ -14,3 +14,7 @@ contextBridge.exposeInMainWorld("get", {
 contextBridge.exposeInMainWorld('api', {
     openFileDialog: () => ipcRenderer.invoke('filedialog')
 });
+
+contextBridge.exposeInMainWorld("link", {
+    openLink: (url) => ipcRenderer.send("openLink", url)
+});

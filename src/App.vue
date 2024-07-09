@@ -1,15 +1,20 @@
 <script>
 import MyBooks from "./components/MyBooks.vue";
 import BookAdd from "./components/BookAdd.vue";
+import SearchBooks from "./components/SearchBooks.vue";
 
 export default {
     components: {
         MyBooks,
         BookAdd,
+        SearchBooks
     },
     data() {
         return {
             title: "Личная библиотека",
+            serverReadingList: [],
+            serverWantToReadList: [],
+            serverFinishReadList: [],
             readingList: [],
             wantToReadList: [],
             finishReadList: []
@@ -37,19 +42,38 @@ export default {
         addBook(book, mode) {
             switch (mode) {
                 case 1:
-                    this.readingList.push(book);
-                    this.updateBooksList(this.readingList, 1);
+                    this.serverReadingList.push(book);
+                    this.updateBooksList(this.serverReadingList, 1);
                     break;
                 case 2:
-                    this.wantToReadList.push(book);
-                    this.updateBooksList(this.wantToReadList, 2);
+                    this.serverWantToReadList.push(book);
+                    this.updateBooksList(this.serverWantToReadList, 2);
                     break;
                 case 3: {
-                    this.finishReadList.push(book);
-                    this.updateBooksList(this.finishReadList, 3);
+                    this.serverFinishReadList.push(book);
+                    this.updateBooksList(this.serverFinishReadList, 3);
                     break;
                 }
             }
+            this.$refs.searchBooks.search();
+        },
+        findBooksShow(filterReadingList, filterWantToReadList, filterFinishReadList, mode) {
+            if (mode == "reading") {
+                filterWantToReadList = [];
+                filterFinishReadList = [];
+            } else if (mode == "wanttoread") {
+                filterReadingList = [];
+                filterFinishReadList = [];
+            } else if (mode == "finishread") {
+                filterReadingList = [];
+                filterWantToReadList = [];
+            }
+            this.readingList = filterReadingList;
+            this.wantToReadList = filterWantToReadList;
+            this.finishReadList = filterFinishReadList;
+            this.$refs.myBooks.setList(this.readingList, 1);
+            this.$refs.myBooks.setList(this.wantToReadList, 2);
+            this.$refs.myBooks.setList(this.finishReadList, 3);
         },
         async getDataServer(path) {
             try {
@@ -61,7 +85,7 @@ export default {
                 return [];
             }
         },
-        async sentDataServer(mode, newBookList) {
+        sentDataServer(mode, newBookList) {
             const dataBookList = JSON.parse(JSON.stringify(newBookList));
             if (mode === "reading") {
                 window.send.reading(dataBookList);
@@ -81,18 +105,26 @@ export default {
             if (event.key == "ArrowLeft") {
                 app.$refs.myBooks.backBookCart();
             }
+            if (event.key == "Enter") {
+                app.$refs.searchBooks.search();
+            }
         });
-        this.readingList = await this.getDataServer("reading");
+        this.serverReadingList = await this.getDataServer("reading");
+        this.readingList = this.serverReadingList;
         this.updateBooksList(this.readingList, 1);
-        this.wantToReadList = await this.getDataServer("want_to_read");
+        this.serverWantToReadList = await this.getDataServer("want_to_read");
+        this.wantToReadList = this.serverWantToReadList;
         this.updateBooksList(this.wantToReadList, 2);
-        this.finishReadList = await this.getDataServer("finish_read");
+        this.serverFinishReadList = await this.getDataServer("finish_read");
+        this.finishReadList = this.serverFinishReadList;
         this.updateBooksList(this.finishReadList, 3);
     }
 }
 </script>
 
 <template>
+    <SearchBooks ref="searchBooks" @findShow="findBooksShow" :readingList="serverReadingList"
+        :wantToReadList="serverWantToReadList" :finishReadList="serverFinishReadList"></SearchBooks>
     <h1>{{ title }}</h1>
     <MyBooks @update="updateBooksList" ref="myBooks"></MyBooks>
     <BookAdd @add="addBook"></BookAdd>

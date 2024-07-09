@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain, dialog} = require("electron");
+const {app, BrowserWindow, ipcMain, dialog, shell} = require("electron");
 const path = require("path");
 const { title } = require("process");
 const fs = require("fs").promises;
@@ -127,4 +127,8 @@ ipcMain.handle('filedialog', async () => {
         filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
     });
     return result.filePaths;
+});
+
+ipcMain.on("openLink", (event, url) => {
+    shell.openExternal(url);
 });

@@ -6,6 +6,7 @@ export default {
             bookTitle: "",
             bookDescription: "",
             bookImages: "",
+            bookLink: "",
             status: "none"
         }
     },
@@ -23,6 +24,11 @@ export default {
             }
             if (this.bookImages) {
                 newBook.images = this.bookImages;
+            }
+            if (this.bookLink) {
+                newBook.link = this.bookLink;
+            } else {
+                newBook.link = "none";
             }
             switch (this.status) {
                 case "reading":
@@ -42,6 +48,7 @@ export default {
             this.bookTitle = '';
             this.bookDescription = '';
             this.bookImages = '';
+            this.bookLink = "";
             this.status = 'none';
         },
         closeAddBookMenu() {
@@ -69,6 +76,10 @@ export default {
                 <div class="form-group">
                     <label>Введите описание книги:</label>
                     <input v-model="bookDescription" type="text">
+                </div>
+                <div class="form-group">
+                    <label>Вставьте ссылку на источник книги:</label>
+                    <input v-model="bookLink" type="text">
                 </div>
                 <div class="form-group">
                     <label>Вставьте ссылку на обложку книги:</label>

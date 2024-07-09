@@ -2,7 +2,6 @@
 import ReadingBlock from "./reading/ReadingBlock.vue";
 import WantToRead from "./wantToRead/WantToRead.vue";
 import FinishRead from "./finishRead/FinishRead.vue";
-import { bind } from "file-loader";
 
 export default {
     name: "MyBooks",

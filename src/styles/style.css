@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .main {
@@ -203,4 +204,24 @@
 .add_book_button {
     width: 20%;
     height: 5%;
+}
+
+.open_link_button {
+    margin-top: 10px;
+    width: 30%;
+    height: 30%;
+    font-size: 20px;
+}
+
+.search_books {
+    position: absolute;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    display: flex;
+}
+
+.search_criteria {
+    display: flex;
+    flex-direction: column;
 }
