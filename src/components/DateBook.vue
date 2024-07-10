@@ -1,7 +1,7 @@
 <script>
 export default {
     name: "DateBook",
-    props: ["book", "status"],
+    props: ["book", "status", "displayMode"],
     data() {
         return {
             bookStatus: this.status,
@@ -12,6 +12,7 @@ export default {
     methods: {
         closeBookDate() {
             this.$el.style.display = "none";
+            this.$emit("displayOff");
         },
         changeBookStatus() {
             this.$emit("delete");

@@ -100,6 +100,15 @@ export default {
                     this.finishReadList = booklist;
                     break;
             }
+        },
+        getDispayDateBook() {
+            if (this.index === 0) {
+                return this.$refs.readingblock.getDispayDateBook()
+            } else if (this.index === 1) {
+                return this.$refs.wanttoread.getDispayDateBook();
+            } else {
+                return this.$refs.finishread.getDispayDateBook();
+            }
         }
     },
     mounted() {

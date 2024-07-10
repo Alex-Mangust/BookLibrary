@@ -19,8 +19,19 @@ export default {
         },
         updateBooksList(book, mode) {
             this.$emit("add", book, mode);
+        },
+        getDispayDateBook() {
+            let displayMode = false;
+            if (this.$refs.bookcart) {
+                this.$refs.bookcart.forEach(bookcart => {
+                    if (bookcart.getDispayDateBook() === "flex") {
+                        displayMode = true;
+                    }
+                });
+            }
+            return displayMode;
+        }
     }
-}
 }
 </script>
 
@@ -31,7 +42,7 @@ export default {
             <div v-if="booklist.length === 0" class="book_cart">
                 <h3>В данный момент здесь пусто</h3>
             </div>
-            <BookCart @update="updateBooksList" @delete="deleteBook" v-for="(book, index) in booklist" :key="index"
+            <BookCart ref="bookcart" @update="updateBooksList" @delete="deleteBook" v-for="(book, index) in booklist" :key="index"
                 :readbook="book" :bookstatus="bookStatus">
             </BookCart>
         </div>

@@ -58,15 +58,18 @@ export default {
             this.$refs.searchBooks.search();
         },
         findBooksShow(filterReadingList, filterWantToReadList, filterFinishReadList, mode) {
+            let modeShow = 0;
             if (mode == "reading") {
                 filterWantToReadList = [];
                 filterFinishReadList = [];
             } else if (mode == "wanttoread") {
                 filterReadingList = [];
                 filterFinishReadList = [];
+                modeShow = 1;
             } else if (mode == "finishread") {
                 filterReadingList = [];
                 filterWantToReadList = [];
+                modeShow = 2;
             }
             this.readingList = filterReadingList;
             this.wantToReadList = filterWantToReadList;
@@ -74,6 +77,7 @@ export default {
             this.$refs.myBooks.setList(this.readingList, 1);
             this.$refs.myBooks.setList(this.wantToReadList, 2);
             this.$refs.myBooks.setList(this.finishReadList, 3);
+            this.$refs.myBooks.aloneComponent(this.$refs.myBooks.getElements(), modeShow);
         },
         async getDataServer(path) {
             try {
@@ -100,10 +104,14 @@ export default {
         const app = this;
         window.addEventListener("keydown", (event) => {
             if (event.key == "ArrowRight") {
-                app.$refs.myBooks.nextBookCart();
+                if (!app.$refs.myBooks.getDispayDateBook() && !app.$refs.bookadd.getDispayBookAddMenu()) {
+                    app.$refs.myBooks.nextBookCart();
+                }
             }
             if (event.key == "ArrowLeft") {
-                app.$refs.myBooks.backBookCart();
+                if (!app.$refs.myBooks.getDispayDateBook() && !app.$refs.bookadd.getDispayBookAddMenu()) {
+                    app.$refs.myBooks.backBookCart();
+                }
             }
             if (event.key == "Enter") {
                 app.$refs.searchBooks.search();
@@ -127,5 +135,5 @@ export default {
         :wantToReadList="serverWantToReadList" :finishReadList="serverFinishReadList"></SearchBooks>
     <h1>{{ title }}</h1>
     <MyBooks @update="updateBooksList" ref="myBooks"></MyBooks>
-    <BookAdd @add="addBook"></BookAdd>
+    <BookAdd ref="bookadd" @add="addBook"></BookAdd>
 </template>

@@ -22,6 +22,15 @@ export default {
         addInBookList(book, mode) {
             this.$emit('add', book, mode);
         },
+        getDispayBookAddMenu() {
+            const addBookMenu = this.$refs.bookaddmenu.$el;
+            const computedStyle = window.getComputedStyle(addBookMenu);
+            if (computedStyle.display == "none") {
+                return false;
+            } else {
+                return true;
+            }
+        }
     },
     async mounted() {
         try {

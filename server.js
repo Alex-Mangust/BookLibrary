@@ -2,15 +2,46 @@ const {app, BrowserWindow, ipcMain, dialog, shell} = require("electron");
 const path = require("path");
 const { title } = require("process");
 const fs = require("fs").promises;
+const os = require('os');
+const localAppData = process.env.LOCALAPPDATA;
 
-let BASE_DIR_BOOKS;
+let BASE_DIR_BOOKS = path.join(__dirname, 'books');
 
-const getBaseDirBooks = () => {
-    const appExePath = app.getPath('exe');
-    const appDir = path.dirname(appExePath);
-    const unpackedPath = path.join(appDir, 'resources', 'app.asar.unpacked', 'books');
-    return unpackedPath;
-};
+// const getBaseDirBooks = () => {
+//     const appExePath = app.getPath('exe');
+//     const appDir = path.dirname(appExePath);
+//     const unpackedPath = path.join(appDir, 'resources', 'app.asar.unpacked', 'books');
+//     return unpackedPath;
+// };
+
+async function createFolderIfNotExists(folderPath) {
+    try {
+        await fs.access(folderPath);
+        console.log(`Папка "${folderPath}" уже существует.`);
+    } catch (error) {
+        try {
+            await fs.mkdir(folderPath, { recursive: true });
+            console.log(`Папка "${folderPath}" была создана.`);
+        } catch (mkdirError) {
+            console.error('Ошибка при создании папки:', mkdirError);
+        }
+    }
+}
+
+async function createJsonFileIfNotExists(filePath) {
+    try {
+        await fs.access(filePath);
+        console.log(`Файл "${filePath}" уже существует.`);
+    } catch (error) {
+        try {
+            await fs.writeFile(filePath, JSON.stringify([], null, 2), 'utf8');
+            console.log(`Файл "${filePath}" был создан и начальные данные записаны.`);
+        } catch (writeError) {
+            console.error('Ошибка при записи в файл JSON:', writeError);
+        }
+    }
+}
+
 
 async function checkFileExists(filePath) {
     try {
@@ -22,12 +53,17 @@ async function checkFileExists(filePath) {
 }
 
 async function initializeApp() {
-    BASE_DIR_BOOKS = getBaseDirBooks();
     let fileExists = await checkFileExists(path.join(BASE_DIR_BOOKS, 'reading.json'));
     fileExists = fileExists || await checkFileExists(path.join(BASE_DIR_BOOKS, 'want_to_read.json'));
     fileExists = fileExists || await checkFileExists(path.join(BASE_DIR_BOOKS, 'finish_read.json'));
     if (!fileExists) {
-        BASE_DIR_BOOKS = path.join(__dirname, 'books');
+        let usersData = path.join(localAppData, "book_library_data");
+        createFolderIfNotExists(usersData);
+        BASE_DIR_BOOKS = path.join(usersData, "books");
+        createFolderIfNotExists(BASE_DIR_BOOKS);
+        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "reading.json"));
+        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "want_to_read.json"));
+        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "finish_read.json"));
         console.log('Files not found. Using fallback directory:', BASE_DIR_BOOKS);
     } else {
         console.log('Files found in:', BASE_DIR_BOOKS);

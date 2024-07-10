@@ -3,6 +3,11 @@ import DateBook from "./DateBook.vue";
 export default {
     name: "BookCart",
     props: ["readbook", "bookstatus"],
+    date() {
+        return {
+            displayDateBook: "none"
+        }
+    },
     components: {
         DateBook
     },
@@ -12,10 +17,11 @@ export default {
         },
         showDateBook() {
             this.$refs.datebook.$el.style.display = "flex";
+            this.displayDateBook = "flex";
             const color = window.getComputedStyle(this.$parent.$el).backgroundColor;
             this.$refs.datebook.$el.querySelectorAll("h1, p").forEach(element => {
                 element.style.color = color;
-            })
+            });
         },
         updateBooksList(book, mode) {
             if (mode === 1) {
@@ -25,10 +31,15 @@ export default {
             } else if (mode === 3) {
                 this.$emit("update", book, 3);
             }
+        },
+        displayOff() {
+            this.displayDateBook = "none";
+        },
+        getDispayDateBook() {
+            return this.displayDateBook;
         }
     },
     mounted() {
-        this.readbook;
         document.querySelectorAll(".book_cart").forEach(bookCart => {
             bookCart.addEventListener("mouseover", () => {
                 const bookCartButton = bookCart.querySelectorAll(".book_cart_buttons");
@@ -55,7 +66,7 @@ export default {
             <button @click="showDateBook">Подробнее</button>
             <button @click="deleteBook">Удалить</button>
         </div>
-        <DateBook @update="updateBooksList" @delete="deleteBook" ref="datebook" :book="readbook" :status="bookstatus">
+        <DateBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="datebook" :book="readbook" :status="bookstatus">
         </DateBook>
     </div>
 </template>
