@@ -1,3 +1,7 @@
+.main_title, img, button, input, select {
+    user-select: none;
+}
+
 #app {
     display: flex;
     flex-direction: column;
@@ -34,7 +38,7 @@
     font-size: 40px;
 }
 
-.reading, .want_to_read, .finish_read {
+.reading, .wanttoread, .finishread {
     display: flex;
     flex-direction: column;
     /* align-items: center; */
@@ -45,7 +49,7 @@
     overflow: auto;
 }
 
-.reading h2, .want_to_read h2, .finish_read h2 {
+.reading h2, .wanttoread h2, .finishread h2 {
     text-align: center;
 }
 
@@ -53,11 +57,11 @@
     background-color: aquamarine;
 }
 
-.want_to_read {
+.wanttoread {
     background-color: darkred;
 }
 
-.finish_read {
+.finishread {
     background-color:burlywood;
 }
 .books {

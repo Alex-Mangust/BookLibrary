@@ -1,12 +1,11 @@
 <script>
-import ReadingBlock from "./reading/ReadingBlock.vue";
-import WantToRead from "./wantToRead/WantToRead.vue";
-import FinishRead from "./finishRead/FinishRead.vue";
+import BookBlock from "./BookBlock.vue";
 
 export default {
     name: "MyBooks",
     data() {
         return {
+            mainBookList: [],
             readingList: [],
             wantToReadList: [],
             finishReadList: [],
@@ -14,9 +13,7 @@ export default {
         }
     },
     components: {
-        ReadingBlock,
-        WantToRead,
-        FinishRead
+        BookBlock,
     },
     methods: {
         getElements() {
@@ -25,6 +22,13 @@ export default {
                 this.$refs.wanttoread,
                 this.$refs.finishread
             ];
+        },
+        getListsBook() {
+            return [
+                this.readingList,
+                this.wantToReadList,
+                this.finishReadList
+            ]
         },
         aloneComponent(components, index = 0) {
             this.$nextTick(() => {  // Дожидаемся завершения рендеринга
@@ -54,52 +58,42 @@ export default {
                 this.aloneComponent(this.getElements(), --this.index);
             }, 300);
         },
-        updateBooksList(bookList, mode) {
-            switch (mode) {
-                case 1:
-                    this.readingList = bookList;
-                    this.$emit("update", this.readingList, mode);
-                    break;
-                case 2:
-                    this.wantToReadList = bookList;
-                    this.$emit("update", this.wantToReadList, mode);
-                    break;
-                case 3: {
-                    this.finishReadList = bookList;
-                    this.$emit("update", this.finishReadList, mode);
-                    break;
-                }
-            }
+        updateBooksList(bookList) {
+            this.$emit("update", bookList);
             this.aloneComponent(this.getElements(), this.index);
         },
-        addNewBook(book, mode) {
-            switch (mode) {
-                case 1:
-                    this.readingList.push(book);
-                    this.updateBooksList(this.readingList, 1);
-                    break;
-                case 2:
-                    this.wantToReadList.push(book);
-                    this.updateBooksList(this.wantToReadList, 2);
-                    break;
-                case 3:
-                    this.finishReadList.push(book);
-                    this.updateBooksList(this.finishReadList, 3);
-                    break;
-            }
+        addNewBook(book) {
+            this.mainBookList.push(book);
+            this.updateBooksList(this.mainBookList);
         },
-        setList(booklist, mode) {
-            switch (mode) {
-                case 1:
-                    this.readingList = booklist;
-                    break;
-                case 2:
-                    this.wantToReadList = booklist;
-                    break;
-                case 3:
-                    this.finishReadList = booklist;
-                    break;
-            }
+        deleteBook(title) {
+            this.$emit("delete", title);
+        },
+        setList(booklist, mode = "all") {
+            this.mainBookList = booklist;
+            this.readingList = [];
+            this.wantToReadList = [];
+            this.finishReadList = [];
+            this.mainBookList.forEach(book => {
+                switch (book.status) {
+                    case "reading":
+                        if (mode === "all" || mode === book.status) {
+                            this.readingList.push(book);
+                        }
+                        break;
+                    case "wanttoread":
+                        if (mode === "all" || mode === book.status) {
+                            this.wantToReadList.push(book);
+                        }
+                        break;
+                    case "finishread":
+                        if (mode === "all" || mode === book.status) {
+                            this.finishReadList.push(book);
+                        }
+                        break;
+                }
+            });
+            console.log(this.readingList);
         },
         getDispayDateBook() {
             if (this.index === 0) {
@@ -120,9 +114,12 @@ export default {
 <template>
     <div class="main">
         <div class="my_books">
-            <ReadingBlock @update="updateBooksList" @add="addNewBook" ref="readingblock" :booklist="readingList"></ReadingBlock>
-            <WantToRead @update="updateBooksList" @add="addNewBook" ref="wanttoread" :booklist="wantToReadList"></WantToRead>
-            <FinishRead @update="updateBooksList" @add="addNewBook" ref="finishread" :booklist="finishReadList"></FinishRead>
+            <BookBlock @delete="deleteBook" @add="addNewBook" ref="readingblock" :booklist="readingList"
+                :status="'reading'"></BookBlock>
+            <BookBlock @delete="deleteBook" @add="addNewBook" ref="wanttoread" :booklist="wantToReadList"
+                :status="'wanttoread'"></BookBlock>
+            <BookBlock @delete="deleteBook" @add="addNewBook" ref="finishread" :booklist="finishReadList"
+                :status="'finishread'"></BookBlock>
         </div>
         <div class="arrows">
             <i @click="backBookCart" class="fa-solid fa-arrow-left"></i>

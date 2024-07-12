@@ -19,8 +19,8 @@ export default {
                 this.$el.classList.remove("add_book_active");
             }
         },
-        addInBookList(book, mode) {
-            this.$emit('add', book, mode);
+        addInBookList(book) {
+            this.$emit('add', book);
         },
         getDispayBookAddMenu() {
             const addBookMenu = this.$refs.bookaddmenu.$el;

@@ -1,38 +1,31 @@
 <script>
 export default {
     name: "SearchBook",
-    props: ["readingList", "wantToReadList", "finishReadList"],
+    props: ["bookList"],
     data() {
         return {
             searchLine: "",
-            filterReadingList: [],
-            filterWantToReadList: [],
-            filterFinishReadList: [],
-            modeFilter: "all"
+            filterBookList: [],
+            modeFilter: "all",
+            mainSearchBookList: this.bookList
         }
     },
     methods: {
-        search() {
+        search(bookList = this.bookList) {
             let regSearch;
+            this.mainSearchBookList = bookList;
             if (this.searchLine != "") {
                 regSearch = new RegExp("^" + this.searchLine + "+?", "i");
             } else {
                 regSearch = new RegExp(this.searchLine, "i");
             }
-            if (this.modeFilter === "all" || this.modeFilter === "reading") {
-                this.filterReadingList = this.readingList.filter(book => regSearch.test(book.title));
-            }
-            if (this.modeFilter === "all" || this.modeFilter === "wanttoread") {
-                this.filterWantToReadList = this.wantToReadList.filter(book => regSearch.test(book.title));
-            }
-            if (this.modeFilter === "all" || this.modeFilter === "finishread") {
-                this.filterFinishReadList = this.finishReadList.filter(book => regSearch.test(book.title));
-            }
-            this.$emit("findShow", this.filterReadingList, this.filterWantToReadList, this.filterFinishReadList, this.modeFilter);
+            this.filterBookList = this.mainSearchBookList.filter(book => regSearch.test(book.title));
+            this.$emit("findShow", this.filterBookList, this.modeFilter);
         },
         resetSearch() {
             this.searchLine = "";
             this.modeFilter = "all";
+            console.log(this.searchLine);
             this.search();
         }
     }
@@ -44,7 +37,7 @@ export default {
     <div class="search_books">
         <div>
             <input v-model="searchLine" type="text">
-            <button @click="search">Поиск</button>
+            <button @click="() => search()">Поиск</button>
         </div>
         <div class="search_criteria">
             <select v-model="modeFilter">
@@ -53,7 +46,7 @@ export default {
                 <option value="wanttoread">Искать в блоке "Хочу прочитать"</option>
                 <option value="finishread">Искать в блоке "Закончил читать"</option>
             </select>
-            <button @click="resetSearch">Сбросить поиск</button>
+            <button @click="() => resetSearch()">Сбросить поиск</button>
         </div>
     </div>
 </template>

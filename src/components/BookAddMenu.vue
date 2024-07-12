@@ -30,17 +30,10 @@ export default {
             } else {
                 newBook.link = "none";
             }
-            switch (this.status) {
-                case "reading":
-                    this.$emit('add', newBook, 1);
-                    break;
-                case "wanttoread":
-                    this.$emit('add', newBook, 2);
-                    break;
-                case "finishread":
-                    this.$emit('add', newBook, 3);
-                    break;
+            if (this.status) {
+                newBook.status = this.status;
             }
+            this.$emit('add', newBook);
             this.$refs.closeButton.click();
             this.clearData();
         },

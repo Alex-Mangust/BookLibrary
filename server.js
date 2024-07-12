@@ -53,17 +53,13 @@ async function checkFileExists(filePath) {
 }
 
 async function initializeApp() {
-    let fileExists = await checkFileExists(path.join(BASE_DIR_BOOKS, 'reading.json'));
-    fileExists = fileExists || await checkFileExists(path.join(BASE_DIR_BOOKS, 'want_to_read.json'));
-    fileExists = fileExists || await checkFileExists(path.join(BASE_DIR_BOOKS, 'finish_read.json'));
+    let fileExists = await checkFileExists(path.join(BASE_DIR_BOOKS, 'dataBooks.json'));
     if (!fileExists) {
         let usersData = path.join(localAppData, "book_library_data");
         createFolderIfNotExists(usersData);
         BASE_DIR_BOOKS = path.join(usersData, "books");
         createFolderIfNotExists(BASE_DIR_BOOKS);
-        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "reading.json"));
-        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "want_to_read.json"));
-        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "finish_read.json"));
+        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "dataBooks.json"));
         console.log('Files not found. Using fallback directory:', BASE_DIR_BOOKS);
     } else {
         console.log('Files found in:', BASE_DIR_BOOKS);
@@ -111,28 +107,8 @@ app.on("window-all-closed", () => {
     }
 });
 
-ipcMain.on("reading", (event, arg) => {
-    fs.writeFile(path.join(BASE_DIR_BOOKS, 'reading.json'), JSON.stringify(arg), { encoding: 'utf8' }, (err) => {
-        if (err) {
-            console.error('Ошибка записи в файл:', err.message);
-        } else {
-            console.log('Файл успешно записан');
-        }
-    });
-});
-
-ipcMain.on("wanttoread", (event, arg) => {
-    fs.writeFile(path.join(BASE_DIR_BOOKS, 'want_to_read.json'), JSON.stringify(arg), { encoding: 'utf8' }, (err) => {
-        if (err) {
-            console.error('Ошибка записи в файл:', err.message);
-        } else {
-            console.log('Файл успешно записан');
-        }
-    });
-});
-
-ipcMain.on("finishread", (event, arg) => {
-    fs.writeFile(path.join(BASE_DIR_BOOKS, 'finish_read.json'), JSON.stringify(arg), { encoding: 'utf8' }, (err) => {
+ipcMain.on("set", (event, arg) => {
+    fs.writeFile(path.join(BASE_DIR_BOOKS, 'dataBooks.json'), JSON.stringify(arg), { encoding: 'utf8' }, (err) => {
         if (err) {
             console.error('Ошибка записи в файл:', err.message);
         } else {
@@ -144,6 +120,7 @@ ipcMain.on("finishread", (event, arg) => {
 
 ipcMain.handle('get', async (event, fileName) => {
     const filePath = path.join(BASE_DIR_BOOKS, fileName);
+    console.log(filePath);
     try {
         const data = await fs.readFile(filePath, 'utf8');
         return JSON.parse(data);

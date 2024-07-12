@@ -1,9 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("send", {
-    reading: (data) => ipcRenderer.send("reading", data),
-    wantToRead: (data) => ipcRenderer.send("wanttoread", data),
-    finishRead: (data) => ipcRenderer.send("finishread", data)
+    set: (data) => ipcRenderer.send("set", data),
 });
 
 contextBridge.exposeInMainWorld("get", {

@@ -2,7 +2,7 @@
 import DateBook from "./DateBook.vue";
 export default {
     name: "BookCart",
-    props: ["readbook", "bookstatus"],
+    props: ["bookInList", "bookstatus"],
     date() {
         return {
             displayDateBook: "none"
@@ -13,7 +13,7 @@ export default {
     },
     methods: {
         deleteBook() {
-            this.$emit("delete", this.readbook.title);
+            this.$emit("delete", this.bookInList);
         },
         showDateBook() {
             this.$refs.datebook.$el.style.display = "flex";
@@ -23,14 +23,8 @@ export default {
                 element.style.color = color;
             });
         },
-        updateBooksList(book, mode) {
-            if (mode === 1) {
-                this.$emit("update", book, 1);
-            } else if (mode === 2) {
-                this.$emit("update", book, 2);
-            } else if (mode === 3) {
-                this.$emit("update", book, 3);
-            }
+        updateBooksList(book) {
+            this.$emit("update", book);
         },
         displayOff() {
             this.displayDateBook = "none";
@@ -60,13 +54,13 @@ export default {
 
 <template>
     <div class="book_cart">
-        <h3>{{ readbook.title }}</h3>
-        <img :src="readbook.images" :alt="readbook.alt">
+        <h3>{{ bookInList.title }}</h3>
+        <img :src="bookInList.images" :alt="bookInList.alt">
         <div class="book_cart_buttons">
             <button @click="showDateBook">Подробнее</button>
             <button @click="deleteBook">Удалить</button>
         </div>
-        <DateBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="datebook" :book="readbook" :status="bookstatus">
+        <DateBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="datebook" :book="bookInList" :status="bookstatus">
         </DateBook>
     </div>
 </template>

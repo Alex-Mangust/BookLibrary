@@ -16,20 +16,16 @@ export default {
         },
         changeBookStatus() {
             this.$emit("delete");
-            switch (this.bookStatus) {
-                case "reading":
-                    this.$emit("update", this.book, 1);
-                    break;
-                case "wanttoread":
-                    this.$emit("update", this.book, 2);
-                    break;
-                case "finishread":
-                    this.$emit("update", this.book, 3);
-                    break;
-            }
+            this.book.status = this.bookStatus;
+            this.$emit("update", this.book);
         },
         openLink() {
-            window.link.openLink(this.book.link);
+            const vereficationUrl = new RegExp("^(https?:\\/\\/)?([\\da-z.-]+)\\.([a-z.]{2,6})([\\/\\w .-]*)*\\/?$");
+            if (vereficationUrl.test(this.book.link)) {
+                window.link.openLink(this.book.link);
+            } else {
+                alert("У книги отсутсвует источник или же вы предоставили неверный адрес.");
+            }
         }
     },
     mounted() {
@@ -66,7 +62,8 @@ export default {
                 <option value="wanttoread">Хочу прочитать</option>
                 <option value="finishread">Закончил читать</option>
             </select>
-            <button class="open_link_button" @click="openLink" :style="{backgroundColor: backgroundOpenButton, color: colorOpenButton}">Открыть источник</button>
+            <button class="open_link_button" @click="openLink"
+                :style="{ backgroundColor: backgroundOpenButton, color: colorOpenButton }">Открыть источник</button>
             <button @click="closeBookDate" class="close_book_date">X</button>
         </div>
     </div>
