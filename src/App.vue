@@ -70,12 +70,12 @@ export default {
         const app = this;
         window.addEventListener("keydown", (event) => {
             if (event.key == "ArrowRight") {
-                if (!app.$refs.myBooks.getDispayDateBook() && !app.$refs.bookadd.getDispayBookAddMenu()) {
+                if (!app.$refs.myBooks.getDispayDataBook() && !app.$refs.bookadd.getDispayBookAddMenu()) {
                     app.$refs.myBooks.nextBookCart();
                 }
             }
             if (event.key == "ArrowLeft") {
-                if (!app.$refs.myBooks.getDispayDateBook() && !app.$refs.bookadd.getDispayBookAddMenu()) {
+                if (!app.$refs.myBooks.getDispayDataBook() && !app.$refs.bookadd.getDispayBookAddMenu()) {
                     app.$refs.myBooks.backBookCart();
                 }
             }

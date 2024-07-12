@@ -1,25 +1,25 @@
 <script>
-import DateBook from "./DateBook.vue";
+import DataBook from "./DataBook.vue";
 export default {
     name: "BookCart",
     props: ["bookInList", "bookstatus"],
-    date() {
+    data() {
         return {
-            displayDateBook: "none"
+            displayDataBook: "none"
         }
     },
     components: {
-        DateBook
+        DataBook
     },
     methods: {
         deleteBook() {
             this.$emit("delete", this.bookInList);
         },
-        showDateBook() {
-            this.$refs.datebook.$el.style.display = "flex";
-            this.displayDateBook = "flex";
+        showDataBook() {
+            this.$refs.databook.$el.style.display = "flex";
+            this.displayDataBook = "flex";
             const color = window.getComputedStyle(this.$parent.$el).backgroundColor;
-            this.$refs.datebook.$el.querySelectorAll("h1, p").forEach(element => {
+            this.$refs.databook.$el.querySelectorAll("h1, p").forEach(element => {
                 element.style.color = color;
             });
         },
@@ -27,10 +27,10 @@ export default {
             this.$emit("update", book);
         },
         displayOff() {
-            this.displayDateBook = "none";
+            this.displayDataBook = "none";
         },
-        getDispayDateBook() {
-            return this.displayDateBook;
+        getDispayDataBook() {
+            return this.displayDataBook;
         }
     },
     mounted() {
@@ -53,14 +53,13 @@ export default {
 </script>
 
 <template>
-    <div class="book_cart">
+    <div class="book_cart" @click="showDataBook">
         <h3>{{ bookInList.title }}</h3>
         <img :src="bookInList.images" :alt="bookInList.alt">
         <div class="book_cart_buttons">
-            <button @click="showDateBook">Подробнее</button>
             <button @click="deleteBook">Удалить</button>
         </div>
-        <DateBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="datebook" :book="bookInList" :status="bookstatus">
-        </DateBook>
+        <DataBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="databook" :book="bookInList" :status="bookstatus">
+        </DataBook>
     </div>
 </template>

@@ -89,7 +89,7 @@ export default {
                 <option value="finishread">Закончил читать</option>
             </select>
             <button @click.stop="addBook" class="add_book_button">Добавить</button>
-            <button ref="closeButton" @click.stop="closeAddBookMenu" class="close_book_date">X</button>
+            <button ref="closeButton" @click.stop="closeAddBookMenu" class="close_book_data">X</button>
         </div>
     </div>
 </template>

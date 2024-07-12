@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: "DateBook",
+    name: "DataBook",
     props: ["book", "status", "displayMode"],
     data() {
         return {
@@ -10,7 +10,7 @@ export default {
         }
     },
     methods: {
-        closeBookDate() {
+        closeBookData() {
             this.$el.style.display = "none";
             this.$emit("displayOff");
         },
@@ -52,19 +52,21 @@ export default {
 </script>
 
 <template>
-    <div class="date_book">
-        <div class="inside_date_book">
+    <div class="data_book">
+        <div class="inside_data_book">
             <h1>{{ book.title }}</h1>
             <img :src="book.images" :alt="book.alt">
-            <p>{{ book.description }}</p>
+            <div class="description_data_book">
+                <p>{{ book.description }}</p>
+            </div>
+            <button class="open_link_button" @click="openLink"
+                :style="{ backgroundColor: backgroundOpenButton, color: colorOpenButton }">Открыть источник</button>
+            <button @click.stop="closeBookData" class="close_book_data">X</button>
             <select v-model="bookStatus" @change="changeBookStatus">
                 <option value="reading">Читаю</option>
                 <option value="wanttoread">Хочу прочитать</option>
                 <option value="finishread">Закончил читать</option>
             </select>
-            <button class="open_link_button" @click="openLink"
-                :style="{ backgroundColor: backgroundOpenButton, color: colorOpenButton }">Открыть источник</button>
-            <button @click="closeBookDate" class="close_book_date">X</button>
         </div>
     </div>
 </template>

@@ -1,7 +1,7 @@
 <script>
 import BookCart from "./BookCart.vue"
 export default {
-    name: "ReadingBlock",
+    name: "BookBlock",
     components: {
         BookCart,
     },
@@ -20,11 +20,11 @@ export default {
         updateBooksList(book) {
             this.$emit("add", book);
         },
-        getDispayDateBook() {
+        getDispayDataBook() {
             let displayMode = false;
             if (this.$refs.bookcart) {
                 this.$refs.bookcart.forEach(bookcart => {
-                    if (bookcart.getDispayDateBook() === "flex") {
+                    if (bookcart.getDispayDataBook() === "flex") {
                         displayMode = true;
                     }
                 });

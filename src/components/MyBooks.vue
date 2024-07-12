@@ -18,7 +18,7 @@ export default {
     methods: {
         getElements() {
             return [
-                this.$refs.readingblock,
+                this.$refs.reading,
                 this.$refs.wanttoread,
                 this.$refs.finishread
             ];
@@ -93,15 +93,14 @@ export default {
                         break;
                 }
             });
-            console.log(this.readingList);
         },
-        getDispayDateBook() {
+        getDispayDataBook() {
             if (this.index === 0) {
-                return this.$refs.readingblock.getDispayDateBook()
+                return this.$refs.reading.getDispayDataBook()
             } else if (this.index === 1) {
-                return this.$refs.wanttoread.getDispayDateBook();
+                return this.$refs.wanttoread.getDispayDataBook();
             } else {
-                return this.$refs.finishread.getDispayDateBook();
+                return this.$refs.finishread.getDispayDataBook();
             }
         }
     },
@@ -114,7 +113,7 @@ export default {
 <template>
     <div class="main">
         <div class="my_books">
-            <BookBlock @delete="deleteBook" @add="addNewBook" ref="readingblock" :booklist="readingList"
+            <BookBlock @delete="deleteBook" @add="addNewBook" ref="reading" :booklist="readingList"
                 :status="'reading'"></BookBlock>
             <BookBlock @delete="deleteBook" @add="addNewBook" ref="wanttoread" :booklist="wantToReadList"
                 :status="'wanttoread'"></BookBlock>

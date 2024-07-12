@@ -2,6 +2,14 @@
     user-select: none;
 }
 
+html, body {
+    background-color: rgb(48, 47, 47);
+}
+
+p, h1, h2, h3 {
+    color: white;
+}
+
 #app {
     display: flex;
     flex-direction: column;
@@ -54,7 +62,7 @@
 }
 
 .reading {
-    background-color: aquamarine;
+    background-color: rgb(2, 201, 134);
 }
 
 .wanttoread {
@@ -62,7 +70,7 @@
 }
 
 .finishread {
-    background-color:burlywood;
+    background-color:rgb(187, 149, 101);
 }
 .books {
     display: grid;
@@ -138,37 +146,54 @@
     margin: 0px 10px;
 }
 
-.date_book, .add_book_menu {
+.data_book, .add_book_menu {
     position: fixed;
     display: none;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
     top: 10%;
     left: 50%;
     width: 70svw;
     padding: 20px 0;
     height: 70svh;
     transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.938);
+    background-color: rgba(0, 0, 0, 0.959);
     z-index: 2;
     overflow-y: auto;
 }
 
-.inside_date_book, .inside_add_book_menu {
+.inside_data_book, .inside_add_book_menu {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
     width: 50%;
-    height: 50%;
+    height: 90%;
 }
 
-.inside_date_book img {
+.inside_data_book img {
     width: auto;
     height: auto;
-    max-height: 300px;
-    max-width: 300px;
+    max-height: 40%;
+    max-width: 80%;
+    margin-bottom: 5%;
 }
 
-.close_book_date {
+.description_data_book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60%;
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.281);
+    margin-bottom: 5%;
+    overflow-y: auto;
+}
+
+.close_book_data {
     position: absolute;
     top: 0;
     right: 0;
@@ -211,10 +236,10 @@
 }
 
 .open_link_button {
-    margin-top: 10px;
     width: 30%;
-    height: 30%;
+    height: 5%;
     font-size: 20px;
+    margin-bottom: 5%;
 }
 
 .search_books {
