@@ -2,6 +2,9 @@
 import MyBooks from "./components/MyBooks.vue";
 import BookAdd from "./components/BookAdd.vue";
 import SearchBooks from "./components/SearchBooks.vue";
+// const MyBooks = () => import("./components/MyBooks.vue");
+// const BookAdd = () => import("./components/BookAdd.vue");
+// const SearchBooks = () => import("./components/SearchBooks.vue");
 
 export default {
     components: {
@@ -17,39 +20,34 @@ export default {
         }
     },
     methods: {
-        updateBooksList(bookList) {
+        async updateBooksList(bookList) {
             this.bookList = bookList;
             this.sentDataServer(bookList);
             this.$refs.myBooks.setList(bookList);
         },
-        addBook(book) {
+        async addBook(book) {
             this.serverBookList.push(book);
-            this.updateBooksList(this.serverBookList);
+            await this.updateBooksList(this.serverBookList);
             this.$refs.searchBooks.search(this.serverBookList);
         },
-        deleteBook(title) {
+        async deleteBook(title) {
             this.serverBookList = this.serverBookList.filter(book => book.title !== title);
-            this.updateBooksList(this.serverBookList);
+            await this.updateBooksList(this.serverBookList);
             this.$refs.searchBooks.search(this.serverBookList);
         },
         findBooksShow(filterBookList, mode) {
             this.$refs.myBooks.setList(filterBookList, mode);
-            if (mode === "all") {
-                const listFindBook = this.$refs.myBooks.getListsBook();
-                let findIndex = 0;
-                while (findIndex < listFindBook.length && listFindBook[findIndex].length === 0) {
-                    findIndex++;
-                }
-                this.$refs.myBooks.aloneComponent(this.$refs.myBooks.getElements(), findIndex);
-            } else {
-                let modeShow = 0;
-                if (mode == "wanttoread") {
-                    modeShow = 1
-                } else if (mode == "finishread") {
-                    modeShow = 2;
-                }
-                this.$refs.myBooks.aloneComponent(this.$refs.myBooks.getElements(), modeShow);
-            }
+            const listFindBook = this.$refs.myBooks.getListsBook();
+            const findIndex = listFindBook.findIndex(bookList => bookList.length > 0);
+            console.log(findIndex);
+            this.$refs.myBooks.aloneComponent(this.$refs.myBooks.getElements(), findIndex >= 0 ? findIndex : this.getModeValue(mode));
+        },
+        getModeValue(mode) {
+            const modeMap = {
+                "wanttoread": 1,
+                "finishread": 2
+            };
+            return modeMap[mode] || 0;
         },
         async getDataServer(path) {
             try {

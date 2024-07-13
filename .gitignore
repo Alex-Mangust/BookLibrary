@@ -35,3 +35,7 @@ out/
 
 # Script
 Electron.js
+
+# CreateRandomBook
+randomImg.json
+randomBook.js

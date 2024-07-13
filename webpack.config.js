@@ -1,7 +1,9 @@
 const path = require('path');
+const webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 
 module.exports = {
   entry: './src/main.js',
@@ -11,6 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'build/src'),
     publicPath: '/',
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -46,6 +49,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+    }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
@@ -59,12 +67,6 @@ module.exports = {
   resolve: {
     alias: {
       vue$: 'vue/dist/vue.esm-bundler.js',
-    },
-    fallback: {
-      "crypto": require.resolve("crypto-browserify"),
-      "path": require.resolve("path-browserify"),
-      "stream": require.resolve("stream-browserify"),
-      "vm": require.resolve("vm-browserify"),
     },
     extensions: ['.js', '.vue', '.json'],
   },

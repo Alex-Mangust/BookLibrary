@@ -1,18 +1,10 @@
 const {app, BrowserWindow, ipcMain, dialog, shell} = require("electron");
 const path = require("path");
-const { title } = require("process");
+// const { title } = require("process");
 const fs = require("fs").promises;
-const os = require('os');
 const localAppData = process.env.LOCALAPPDATA;
 
 let BASE_DIR_BOOKS = path.join(__dirname, 'books');
-
-// const getBaseDirBooks = () => {
-//     const appExePath = app.getPath('exe');
-//     const appDir = path.dirname(appExePath);
-//     const unpackedPath = path.join(appDir, 'resources', 'app.asar.unpacked', 'books');
-//     return unpackedPath;
-// };
 
 async function createFolderIfNotExists(folderPath) {
     try {
@@ -56,10 +48,10 @@ async function initializeApp() {
     let fileExists = await checkFileExists(path.join(BASE_DIR_BOOKS, 'dataBooks.json'));
     if (!fileExists) {
         let usersData = path.join(localAppData, "book_library_data");
-        createFolderIfNotExists(usersData);
+        await createFolderIfNotExists(usersData);
         BASE_DIR_BOOKS = path.join(usersData, "books");
-        createFolderIfNotExists(BASE_DIR_BOOKS);
-        createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "dataBooks.json"));
+        await createFolderIfNotExists(BASE_DIR_BOOKS);
+        await createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "dataBooks.json"));
         console.log('Files not found. Using fallback directory:', BASE_DIR_BOOKS);
     } else {
         console.log('Files found in:', BASE_DIR_BOOKS);
@@ -67,6 +59,8 @@ async function initializeApp() {
 }
 
 const createWindow = () => {
+    app.commandLine.appendSwitch('ignore-certificate-errors');
+    app.commandLine.appendSwitch('ignore-ssl-errors', 'true');
     const win = new BrowserWindow({
         width: 800,
         height: 800,
@@ -88,6 +82,14 @@ const createWindow = () => {
     win.once('ready-to-show', () => {
         win.maximize(); // Увеличивает окно до размеров экрана, оставляя панель заголовка
     });
+
+    win.on('unresponsive', () => {
+        console.warn('Window is unresponsive');
+    });
+
+    win.on('closed', () => {
+        console.log('Window closed');
+    });
 }
 
 app.whenReady().then(async () => {
@@ -107,20 +109,18 @@ app.on("window-all-closed", () => {
     }
 });
 
-ipcMain.on("set", (event, arg) => {
-    fs.writeFile(path.join(BASE_DIR_BOOKS, 'dataBooks.json'), JSON.stringify(arg), { encoding: 'utf8' }, (err) => {
-        if (err) {
-            console.error('Ошибка записи в файл:', err.message);
-        } else {
-            console.log('Файл успешно записан');
-        }
-    });
+ipcMain.on("set", async (event, arg) => {
+    try {
+        await fs.writeFile(path.join(BASE_DIR_BOOKS, 'dataBooks.json'), JSON.stringify(arg), "utf-8");
+        console.log('Файл успешно записан');
+    } catch (error) {
+        console.error('Ошибка записи в файл:', err.message);
+    }
 });
 
 
 ipcMain.handle('get', async (event, fileName) => {
     const filePath = path.join(BASE_DIR_BOOKS, fileName);
-    console.log(filePath);
     try {
         const data = await fs.readFile(filePath, 'utf8');
         return JSON.parse(data);

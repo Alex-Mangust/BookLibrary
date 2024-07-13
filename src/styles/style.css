@@ -136,6 +136,7 @@ p, h1, h2, h3 {
     width: 100%;
     height: 100%;
     justify-content: end;
+    align-items: center;
     gap: 10px;
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.151);
@@ -144,6 +145,10 @@ p, h1, h2, h3 {
 
 .book_cart_buttons button {
     margin: 0px 10px;
+    width: max-content;
+    height: max-content;
+    padding: 0 20%;
+    background-color: red;
 }
 
 .data_book, .add_book_menu {
@@ -236,8 +241,8 @@ p, h1, h2, h3 {
 }
 
 .open_link_button {
-    width: 30%;
-    height: 5%;
+    width: max-content;
+    height: max-content;
     font-size: 20px;
     margin-bottom: 5%;
 }

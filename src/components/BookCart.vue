@@ -57,7 +57,7 @@ export default {
         <h3>{{ bookInList.title }}</h3>
         <img :src="bookInList.images" :alt="bookInList.alt">
         <div class="book_cart_buttons">
-            <button @click="deleteBook">Удалить</button>
+            <button class="delete_button" @click.stop="deleteBook">Удалить</button>
         </div>
         <DataBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="databook" :book="bookInList" :status="bookstatus">
         </DataBook>

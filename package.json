@@ -13,18 +13,14 @@
     "webpack": "webpack",
     "build_css": "postcss src/styles/style.css -o build/src/styles/style.css"
   },
-  "author": "",
+  "author": "Alexandr Stogny",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "@faker-js/faker": "^8.4.1",
     "cors": "^2.8.5",
-    "crypto-browserify": "^3.12.0",
     "css-loader": "^6.7.3",
-    "express": "^4.19.2",
     "mini-css-extract-plugin": "^2.9.0",
     "open": "^10.1.0",
-    "stream-browserify": "^3.0.0",
-    "vm-browserify": "^1.1.2",
     "vue": "^3.4.31",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4"
@@ -37,7 +33,6 @@
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
     "file-loader": "^6.2.0",
-    "path-browserify": "^1.0.1",
     "postcss": "^8.4.39",
     "postcss-cli": "^11.0.0",
     "postcss-preset-env": "^9.6.0",
@@ -57,7 +52,6 @@
       },
       "server.js",
       "preload.js",
-      "node_modules/**/*",
       "package.json"
     ],
     "directories": {
