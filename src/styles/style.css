@@ -168,13 +168,23 @@ p, h1, h2, h3 {
     overflow-y: auto;
 }
 
-.inside_data_book, .inside_add_book_menu {
+.inside_data_book, .inside_add_book_menu, .inside_edit_book_menu {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     width: 50%;
     height: 90%;
+}
+
+.inside_data_book {
+    position: relative;
+}
+
+.edit {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .inside_data_book img {
@@ -225,7 +235,7 @@ p, h1, h2, h3 {
     font-size: 20px;
 }
 
-.inside_add_book_menu {
+.inside_add_book_menu, .inside_edit_book_menu {
     justify-content: center;
     width: 100%;
     height: 100%;
@@ -258,4 +268,8 @@ p, h1, h2, h3 {
 .search_criteria {
     display: flex;
     flex-direction: column;
+}
+
+.inside_edit_book_menu {
+    display: none;
 }

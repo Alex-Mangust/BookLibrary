@@ -2,10 +2,6 @@
 import MyBooks from "./components/MyBooks.vue";
 import BookAdd from "./components/BookAdd.vue";
 import SearchBooks from "./components/SearchBooks.vue";
-// const MyBooks = () => import("./components/MyBooks.vue");
-// const BookAdd = () => import("./components/BookAdd.vue");
-// const SearchBooks = () => import("./components/SearchBooks.vue");
-
 export default {
     components: {
         MyBooks,
@@ -39,7 +35,6 @@ export default {
             this.$refs.myBooks.setList(filterBookList, mode);
             const listFindBook = this.$refs.myBooks.getListsBook();
             const findIndex = listFindBook.findIndex(bookList => bookList.length > 0);
-            console.log(findIndex);
             this.$refs.myBooks.aloneComponent(this.$refs.myBooks.getElements(), findIndex >= 0 ? findIndex : this.getModeValue(mode));
         },
         getModeValue(mode) {

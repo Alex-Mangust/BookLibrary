@@ -1,7 +1,8 @@
 <script>
+import BookEditMenu from './BookEditMenu.vue';
 export default {
     name: "DataBook",
-    props: ["book", "status", "displayMode"],
+    props: ["book", "status", "displayMode", "bookIndex"],
     data() {
         return {
             bookStatus: this.status,
@@ -9,14 +10,23 @@ export default {
             backgroundOpenButton: ""
         }
     },
+    components: {
+        BookEditMenu
+    },
     methods: {
         closeBookData() {
+            if (getComputedStyle(this.$refs.bookEdit.$el).display === "flex") {
+                this.$refs.bookEdit.save();
+            }
             this.$el.style.display = "none";
             this.$emit("displayOff");
         },
         changeBookStatus() {
             this.$emit("delete");
             this.book.status = this.bookStatus;
+            this.updateBook();
+        },
+        updateBook() {
             this.$emit("update", this.book);
         },
         openLink() {
@@ -26,6 +36,14 @@ export default {
             } else {
                 alert("У книги отсутсвует источник или же вы предоставили неверный адрес.");
             }
+        },
+        editBook() {
+            this.$el.querySelector(".inside_data_book").style.display = "none";
+            this.$refs.bookEdit.$el.style.display = "flex";
+        }, 
+        showDataBook() {
+            this.$el.querySelector(".inside_data_book").style.display = "flex";
+            this.bookStatus = this.book.status;
         }
     },
     mounted() {
@@ -53,6 +71,7 @@ export default {
 
 <template>
     <div class="data_book">
+        <button @click.stop="closeBookData" class="close_book_data">X</button>
         <div class="inside_data_book">
             <h1>{{ book.title }}</h1>
             <img :src="book.images" :alt="book.alt">
@@ -61,12 +80,13 @@ export default {
             </div>
             <button class="open_link_button" @click="openLink"
                 :style="{ backgroundColor: backgroundOpenButton, color: colorOpenButton }">Открыть источник</button>
-            <button @click.stop="closeBookData" class="close_book_data">X</button>
             <select v-model="bookStatus" @change="changeBookStatus">
                 <option value="reading">Читаю</option>
                 <option value="wanttoread">Хочу прочитать</option>
                 <option value="finishread">Закончил читать</option>
             </select>
+            <button @click="editBook" class="edit">Редактировать</button>
         </div>
+        <BookEditMenu @update="updateBook" @show="showDataBook" ref="bookEdit" :book="this.book"></BookEditMenu>
     </div>
 </template>

@@ -2,7 +2,7 @@
 import DataBook from "./DataBook.vue";
 export default {
     name: "BookCart",
-    props: ["bookInList", "bookstatus"],
+    props: ["bookInList", "bookstatus", "bookIndex"],
     data() {
         return {
             displayDataBook: "none"
@@ -59,7 +59,7 @@ export default {
         <div class="book_cart_buttons">
             <button class="delete_button" @click.stop="deleteBook">Удалить</button>
         </div>
-        <DataBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="databook" :book="bookInList" :status="bookstatus">
+        <DataBook @update="updateBooksList" @delete="deleteBook" @displayOff="displayOff" ref="databook" :book="bookInList" :status="bookstatus" :bookIndex="this.bookIndex">
         </DataBook>
     </div>
 </template>

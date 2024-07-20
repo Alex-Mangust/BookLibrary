@@ -1,4 +1,5 @@
 <script>
+import { th } from "@faker-js/faker";
 import BookCart from "./BookCart.vue"
 export default {
     name: "BookBlock",
@@ -51,7 +52,7 @@ export default {
             <div v-if="booklist.length === 0" class="book_cart">
                 <h3>В данный момент здесь пусто</h3>
             </div>
-            <BookCart ref="bookcart" @update="updateBooksList" @delete="deleteBook" v-for="(book, index) in booklist" :key="index" :bookInList="book" :bookstatus="this.status">
+            <BookCart ref="bookcart" @update="updateBooksList" @delete="deleteBook" v-for="(book, index) in booklist" :key="index" :bookInList="book" :bookstatus="this.status" :bookIndex="index">
             </BookCart>
         </div>
     </div>
