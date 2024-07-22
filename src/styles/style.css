@@ -185,7 +185,18 @@ p, h1, h2, h3 {
     position: absolute;
     top: 0;
     right: 0;
+    width: 50px;
+    height: 50px;
+    transition: all 0.2s;
 }
+
+.edit:hover {
+    color: blue !important;
+}
+
+/* .edit:active {
+    transform: scale(0.2);
+} */
 
 .inside_data_book img {
     width: auto;
@@ -199,7 +210,7 @@ p, h1, h2, h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     height: 60%;
     width: 80%;
     background-color: rgba(0, 0, 0, 0.5);
@@ -272,4 +283,32 @@ p, h1, h2, h3 {
 
 .inside_edit_book_menu {
     display: none;
+}
+
+.inside_edit_book_menu .description_data_book {
+    justify-content: center;
+    height: 30%;
+    margin-bottom: 2%;
+}
+
+.edit_img {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10%;
+    height: 50%;
+}
+
+.edit_img img {
+    width: auto;
+    height: auto;
+    max-height: 80%;
+    max-width: 80%;
+}
+
+.edit_img div {
+    display: flex;
+    flex-direction: column;
+    gap: 10%;
 }
