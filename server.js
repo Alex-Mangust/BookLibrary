@@ -1,10 +1,11 @@
-const {app, BrowserWindow, ipcMain, dialog, shell} = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
 // const { title } = require("process");
 const fs = require("fs").promises;
 const localAppData = process.env.LOCALAPPDATA;
 
 let BASE_DIR_BOOKS = path.join(__dirname, 'books');
+const windows = new Set();
 
 async function createFolderIfNotExists(folderPath) {
     try {
@@ -73,22 +74,169 @@ const createWindow = () => {
         }
     });
     const indexPath = path.join(__dirname, "build/src", 'index.html');
-    // console.log("Loading file from:", indexPath);
-
+    windows.add(win);
     win.loadFile(indexPath).catch(err => {
         console.error("Error loading file:", err);
     });
 
-    win.once('ready-to-show', () => {
+    win.once("ready-to-show", () => {
         win.maximize(); // Увеличивает окно до размеров экрана, оставляя панель заголовка
     });
 
-    win.on('unresponsive', () => {
-        console.warn('Window is unresponsive');
+    win.on("unresponsive", () => {
+        console.warn("Window is unresponsive");
     });
 
-    win.on('closed', () => {
-        console.log('Window closed');
+    win.on("closed", () => {
+        console.log("Window closed");
+        app.quit();
+    });
+
+    ipcMain.on("openLink", (event, url) => {
+        const contentBounds = win.getContentBounds();
+        const winSourseBook = new BrowserWindow({
+            width: contentBounds.width,
+            height: contentBounds.height,
+            x: contentBounds.x,
+            y: contentBounds.y,
+            frame: true,
+            webPreferences: {
+                preload: path.join(__dirname, "preload.js"),
+                nodeIntegration: true,
+                contextIsolation: true
+            }
+        });
+        const boundsSourseBook = winSourseBook.getBounds();
+        const contentBoundsSourseBook = win.getContentBounds();
+        const contentSize = winSourseBook.webContents.getOwnerBrowserWindow().getContentBounds();
+        const frameWinSourseBook = new BrowserWindow({
+            width: contentBoundsSourseBook.width,
+            height: (boundsSourseBook.height - contentSize.height) + 10,
+            x: contentBounds.x,
+            y: contentBounds.y,
+            frame: false,
+            webPreferences: {
+                preload: path.join(__dirname, "preload.js"),
+                nodeIntegration: true,
+                contextIsolation: true
+            }
+        });
+        const htmlContent = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        height: 100%;
+                        width: 100%;
+                    }
+                    body {
+                        display: flex;
+                        justify-content: end;
+                        align-items: center;
+                        background: black;
+                    }
+                    #close_button {
+                        margin-right: 2em;
+                    }
+                </style>
+            </head>
+            <body>
+                <button id="close_button">X</button>
+                <script>
+                    document.getElementById("close_button").addEventListener("click", () => {
+                        window.send.closeSourseBook();
+                    });
+                </script>
+            </body>
+            </html>
+        `;
+        frameWinSourseBook.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+        winSourseBook.loadURL(url);
+        winSourseBook.setSkipTaskbar(true);
+        frameWinSourseBook.setSkipTaskbar(true);
+        windows.add(winSourseBook);
+        windows.add(frameWinSourseBook);
+        ipcMain.on("close", () => {
+            windows.forEach(window => {
+                if (window != win) {
+                    window.close();
+                    windows.delete(window);
+                }
+            });
+        });
+        win.on("focus", () => {
+            windows.forEach(window => {
+                if (window != win) {
+                    window.setAlwaysOnTop(true);
+                }
+            });
+        });
+
+        win.on("blur", () => {
+            windows.forEach(window => {
+                if (window != win) {
+                    window.setAlwaysOnTop(false);
+                }
+            });
+        });
+
+        winSourseBook.on("focus", () => {
+            windows.forEach(window => {
+                if (window != win && window != winSourseBook) {
+                    window.setAlwaysOnTop(true);
+                }
+            });
+        });
+
+        winSourseBook.on("blur", () => {
+            windows.forEach(window => {
+                if (window != win && window != winSourseBook) {
+                    window.setAlwaysOnTop(false);
+                }
+            });
+        });
+
+        win.on("minimize", () => {
+            windows.forEach(window => {
+                if (window != win) {
+                    window.hide();
+                }
+            });
+        });
+
+        win.on("restore", () => {
+            windows.forEach(window => {
+                if (window != win) {
+                    window.show();
+                }
+            });
+        });
+
+        win.on("resize", () => {
+            const contentBounds = win.getContentBounds();
+            winSourseBook.setBounds({
+                width: contentBounds.width,
+                height: contentBounds.height,
+                x: contentBounds.x,
+                y: contentBounds.y,
+            });
+        });
+
+        winSourseBook.on("resize", () => {
+            const contentBounds = win.getContentBounds();
+            const boundsSourseBook = winSourseBook.getBounds();
+            const contentSize = winSourseBook.webContents.getOwnerBrowserWindow().getContentBounds();
+            frameWinSourseBook.setBounds({
+                width: contentBounds.width,
+                height: (boundsSourseBook.height - contentSize.height) + 10,
+                x: contentBounds.x,
+                y: contentBounds.y,
+            });
+        });
     });
 }
 
@@ -126,7 +274,7 @@ ipcMain.handle('get', async (event, fileName) => {
         return JSON.parse(data);
     } catch (error) {
         console.error('Error reading file:', error);
-        throw error; 
+        throw error;
     }
 });
 
@@ -140,8 +288,4 @@ ipcMain.handle('filedialog', async () => {
         filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
     });
     return result.filePaths;
-});
-
-ipcMain.on("openLink", (event, url) => {
-    shell.openExternal(url);
 });

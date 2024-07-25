@@ -33,7 +33,13 @@ export default {
         openLink() {
             const vereficationUrl = new RegExp("^(https?:\\/\\/)?([\\da-z.-]+)\\.([a-z.]{2,6})([\\/\\w .-]*)*\\/?$");
             if (vereficationUrl.test(this.book.link)) {
-                window.link.openLink(this.book.link);
+                const checkProtocol = new RegExp("^https?://.+");
+                // https://www.youtube.com
+                if (checkProtocol.test(this.book.link)) {
+                    window.link.openLink(this.book.link);
+                } else {
+                    window.link.openLink(`http://${this.book.link}`);
+                }
             } else {
                 alert("У книги отсутсвует источник или же вы предоставили неверный адрес.");
             }

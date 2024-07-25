@@ -312,3 +312,21 @@ p, h1, h2, h3 {
     flex-direction: column;
     gap: 10%;
 }
+
+.source {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.sourse_book_close_block {
+    display: flex;
+    position: relative; background-color: black; 
+    height: 5svh;
+}
+
+#close_button {
+    position: absolute; top: 50%;
+    right: 2svh;
+    transform: translateY(-50%);
+}

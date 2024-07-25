@@ -58,6 +58,10 @@ export default {
                 placeholder="Введите описание книги...">
             </textarea>
         </div>
+        <div class="source">
+            <label :style="{color: colorOpenButton}">Источник:</label>
+            <input v-model="this.book.link" type="text">
+        </div>
         <select class="select_status_book" v-model="this.book.status">
             <option value="reading">Читаю</option>
             <option value="wanttoread">Хочу прочитать</option>
