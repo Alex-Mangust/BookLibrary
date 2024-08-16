@@ -283,6 +283,7 @@ p, h1, h2, h3 {
 
 .inside_edit_book_menu {
     display: none;
+    position: relative;
 }
 
 .inside_edit_book_menu .description_data_book {
@@ -329,4 +330,18 @@ p, h1, h2, h3 {
     position: absolute; top: 50%;
     right: 2svh;
     transform: translateY(-50%);
+}
+
+.saving_menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    padding: 10px 10px;
+    
+}
+
+.saving_menu_buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
 }

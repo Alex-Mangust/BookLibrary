@@ -1,22 +1,22 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
-// const { title } = require("process");
 const fs = require("fs").promises;
+
 const localAppData = process.env.LOCALAPPDATA;
 
 let BASE_DIR_BOOKS = path.join(__dirname, 'books');
-const windows = new Set();
+let windows = new Set();
 
 async function createFolderIfNotExists(folderPath) {
     try {
         await fs.access(folderPath);
-        console.log(`Папка "${folderPath}" уже существует.`);
+        console.log(`The folder "${folderPath}" already exists.`);
     } catch (error) {
         try {
             await fs.mkdir(folderPath, { recursive: true });
-            console.log(`Папка "${folderPath}" была создана.`);
+            console.log(`The folder "${folderPath}" has been created.`);
         } catch (mkdirError) {
-            console.error('Ошибка при создании папки:', mkdirError);
+            console.error("Error creating folder:", mkdirError);
         }
     }
 }
@@ -24,13 +24,13 @@ async function createFolderIfNotExists(folderPath) {
 async function createJsonFileIfNotExists(filePath) {
     try {
         await fs.access(filePath);
-        console.log(`Файл "${filePath}" уже существует.`);
+        console.log(`The file "${filePath}" already exists.`);
     } catch (error) {
         try {
             await fs.writeFile(filePath, JSON.stringify([], null, 2), 'utf8');
-            console.log(`Файл "${filePath}" был создан и начальные данные записаны.`);
+            console.log(`The file "${filePath}" has been created and the initial data has been written.`);
         } catch (writeError) {
-            console.error('Ошибка при записи в файл JSON:', writeError);
+            console.error("Error writing to JSON file:", writeError);
         }
     }
 }
@@ -53,15 +53,15 @@ async function initializeApp() {
         BASE_DIR_BOOKS = path.join(usersData, "books");
         await createFolderIfNotExists(BASE_DIR_BOOKS);
         await createJsonFileIfNotExists(path.join(BASE_DIR_BOOKS, "dataBooks.json"));
-        console.log('Files not found. Using fallback directory:', BASE_DIR_BOOKS);
+        console.log('Files found in:', BASE_DIR_BOOKS);
     } else {
         console.log('Files found in:', BASE_DIR_BOOKS);
     }
 }
 
 const createWindow = () => {
-    app.commandLine.appendSwitch('ignore-certificate-errors');
-    app.commandLine.appendSwitch('ignore-ssl-errors', 'true');
+    app.commandLine.appendSwitch("ignore-certificate-errors");
+    app.commandLine.appendSwitch("ignore-ssl-errors", "true");
     const win = new BrowserWindow({
         width: 800,
         height: 800,
@@ -93,10 +93,16 @@ const createWindow = () => {
     });
 
     ipcMain.on("openLink", (event, url) => {
-        const contentBounds = win.getContentBounds();
+        const contentBounds = win.getBounds();
+        windows.forEach(window => {
+            if (window.title !== "Book Library") {
+                window.close();
+                windows.delete(window);
+            }
+        });
         const winSourseBook = new BrowserWindow({
-            width: contentBounds.width,
-            height: contentBounds.height,
+            width: 800,
+            height: 800,
             x: contentBounds.x,
             y: contentBounds.y,
             frame: true,
@@ -106,136 +112,13 @@ const createWindow = () => {
                 contextIsolation: true
             }
         });
-        const boundsSourseBook = winSourseBook.getBounds();
-        const contentBoundsSourseBook = win.getContentBounds();
-        const contentSize = winSourseBook.webContents.getOwnerBrowserWindow().getContentBounds();
-        const frameWinSourseBook = new BrowserWindow({
-            width: contentBoundsSourseBook.width,
-            height: (boundsSourseBook.height - contentSize.height) + 10,
-            x: contentBounds.x,
-            y: contentBounds.y,
-            frame: false,
-            webPreferences: {
-                preload: path.join(__dirname, "preload.js"),
-                nodeIntegration: true,
-                contextIsolation: true
-            }
-        });
-        const htmlContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <style>
-                    html, body {
-                        margin: 0;
-                        padding: 0;
-                        height: 100%;
-                        width: 100%;
-                    }
-                    body {
-                        display: flex;
-                        justify-content: end;
-                        align-items: center;
-                        background: black;
-                    }
-                    #close_button {
-                        margin-right: 2em;
-                    }
-                </style>
-            </head>
-            <body>
-                <button id="close_button">X</button>
-                <script>
-                    document.getElementById("close_button").addEventListener("click", () => {
-                        window.send.closeSourseBook();
-                    });
-                </script>
-            </body>
-            </html>
-        `;
-        frameWinSourseBook.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
         winSourseBook.loadURL(url);
-        winSourseBook.setSkipTaskbar(true);
-        frameWinSourseBook.setSkipTaskbar(true);
         windows.add(winSourseBook);
-        windows.add(frameWinSourseBook);
-        ipcMain.on("close", () => {
-            windows.forEach(window => {
-                if (window != win) {
-                    window.close();
-                    windows.delete(window);
-                }
-            });
-        });
-        win.on("focus", () => {
-            windows.forEach(window => {
-                if (window != win) {
-                    window.setAlwaysOnTop(true);
-                }
-            });
-        });
+        winSourseBook.maximize();
 
-        win.on("blur", () => {
-            windows.forEach(window => {
-                if (window != win) {
-                    window.setAlwaysOnTop(false);
-                }
-            });
-        });
-
-        winSourseBook.on("focus", () => {
-            windows.forEach(window => {
-                if (window != win && window != winSourseBook) {
-                    window.setAlwaysOnTop(true);
-                }
-            });
-        });
-
-        winSourseBook.on("blur", () => {
-            windows.forEach(window => {
-                if (window != win && window != winSourseBook) {
-                    window.setAlwaysOnTop(false);
-                }
-            });
-        });
-
-        win.on("minimize", () => {
-            windows.forEach(window => {
-                if (window != win) {
-                    window.hide();
-                }
-            });
-        });
-
-        win.on("restore", () => {
-            windows.forEach(window => {
-                if (window != win) {
-                    window.show();
-                }
-            });
-        });
-
-        win.on("resize", () => {
-            const contentBounds = win.getContentBounds();
-            winSourseBook.setBounds({
-                width: contentBounds.width,
-                height: contentBounds.height,
-                x: contentBounds.x,
-                y: contentBounds.y,
-            });
-        });
-
-        winSourseBook.on("resize", () => {
-            const contentBounds = win.getContentBounds();
-            const boundsSourseBook = winSourseBook.getBounds();
-            const contentSize = winSourseBook.webContents.getOwnerBrowserWindow().getContentBounds();
-            frameWinSourseBook.setBounds({
-                width: contentBounds.width,
-                height: (boundsSourseBook.height - contentSize.height) + 10,
-                x: contentBounds.x,
-                y: contentBounds.y,
-            });
+        winSourseBook.on("closed", () => {
+            windows = new Set();
+            windows.add(win);
         });
     });
 }
@@ -260,9 +143,9 @@ app.on("window-all-closed", () => {
 ipcMain.on("set", async (event, arg) => {
     try {
         await fs.writeFile(path.join(BASE_DIR_BOOKS, 'dataBooks.json'), JSON.stringify(arg), "utf-8");
-        console.log('Файл успешно записан');
+        console.log("The file was written successfully.");
     } catch (error) {
-        console.error('Ошибка записи в файл:', err.message);
+        console.error("Error writing to file:", err.message);
     }
 });
 

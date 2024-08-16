@@ -17,8 +17,10 @@
   "license": "ISC",
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
+    "booklibrary": "file:",
     "cors": "^2.8.5",
     "css-loader": "^6.7.3",
+    "lodash.isequal": "^4.5.0",
     "mini-css-extract-plugin": "^2.9.0",
     "open": "^10.1.0",
     "vue": "^3.4.31",

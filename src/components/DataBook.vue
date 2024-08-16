@@ -16,10 +16,11 @@ export default {
     methods: {
         closeBookData() {
             if (getComputedStyle(this.$refs.bookEdit.$el).display === "flex") {
-                this.$refs.bookEdit.save();
+                this.$refs.bookEdit.saveWithClose();
+            } else {
+                this.$el.style.display = "none";
+                this.$emit("displayOff");
             }
-            this.$el.style.display = "none";
-            this.$emit("displayOff");
         },
         changeBookStatus() {
             this.book.status = this.bookStatus;
@@ -34,14 +35,16 @@ export default {
             const vereficationUrl = new RegExp("^(https?:\\/\\/)?([\\da-z.-]+)\\.([a-z.]{2,6})([\\/\\w .-]*)*\\/?$");
             if (vereficationUrl.test(this.book.link)) {
                 const checkProtocol = new RegExp("^https?://.+");
-                // https://www.youtube.com
                 if (checkProtocol.test(this.book.link)) {
                     window.link.openLink(this.book.link);
                 } else {
                     window.link.openLink(`http://${this.book.link}`);
                 }
             } else {
-                alert("У книги отсутсвует источник или же вы предоставили неверный адрес.");
+                if (confirm("Не удалось открыть источник. Хотите произвести поиск книги в интернете?")) {
+                    const searchQuery = `Читать книгу "${this.book.title}"`;
+                    window.link.openLink(`https://yandex.ru/search/?text=${encodeURIComponent(searchQuery)}`);
+                }
             }
         },
         editBook() {
@@ -102,6 +105,6 @@ export default {
             </g>
           </svg>
         </div>
-        <BookEditMenu @update="updateBook" @show="showDataBook" ref="bookEdit" :book="this.book"></BookEditMenu>
+        <BookEditMenu @close="closeBookData" @update="updateBook" @show="showDataBook" ref="bookEdit" :book="this.book"></BookEditMenu>
     </div>
 </template>

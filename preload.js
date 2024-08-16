@@ -2,7 +2,6 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("send", {
     set: (data) => ipcRenderer.send("set", data),
-    closeSourseBook: () => ipcRenderer.send("close")
 });
 
 contextBridge.exposeInMainWorld("get", {
